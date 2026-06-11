@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>⚽ W杯2026 - Die Mannschaft Hub</title>
+  <meta name="theme-color" content="#0A0E1A">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- ===== 完全PWA対応アイコン設定 ===== -->
+<meta name="apple-mobile-web-app-title" content="W杯2026🇩🇪">
+<meta name="application-name" content="Die Mannschaft Hub">
+
+<!-- PWAマニフェスト -->
+<link rel="manifest" href="manifest.json">
+
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ========== デザインシステム ========== */
+    :root {
+      --bg-primary: #0A0E1A;
+      --bg-card: rgba(255,255,255,0.05);
+      --bg-card-hover: rgba(255,255,255,0.09);
+      --gold: #D4AF37;
+      --gold-glow: rgba(212,175,55,0.4);
+      --white: #F8FAFC;
+      --gray: #94A3B8;
+      --border: rgba(255,255,255,0.08);
+      
+      /* ドイツ国旗カラー */
+      --ger-black: #1a1a1a;
+      --ger-red: #DD0000;
+      --ger-gold: #FFCC00;
+      
+      /* 決勝戦カラー */
+      --final-gold: #FFD700;
+      --final-glow: rgba(255,215,0,0.6);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--white);
+      font-family: 'Inter', -apple-system, sans-serif;
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(ellipse at 20% 20%, rgba(212,175,55,0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(59,130,246,0.03) 0%, transparent 50%);
+      padding-bottom: 90px;
+    }
+
+    /* ========== ヘッダー ========== */
+    header {
+      background: rgba(10,14,26,0.97);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      padding: 0.9rem 1.5rem;
+      padding-top: calc(0.9rem + env(safe-area-inset-top));
+    }
+
+    .header-content {
+      max-width: 900px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .logo {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.5rem; letter-spacing: 3px;
+      background: linear-gradient(90deg, var(--ger-black) 0%, var(--ger-red) 40%, var(--ger-gold) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: brightness(1.4);
+    }
+    .logo-sub {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.5rem; letter-spacing: 3px;
+      color: var(--white); margin-left: 0.5rem;
+    }
+
+    /* ========== メインコンテンツ ========== */
+    main { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem; }
+    .section { display: none; animation: fadeIn 0.4s ease; }
+    .section.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ========== カウントダウンヒーロー ========== */
+    .countdown-hero {
+      border-radius: 20px; padding: 2rem 1.5rem;
+      text-align: center; margin-bottom: 2rem;
+      position: relative; overflow: hidden;
+      /* ドイツ3色グラデーション */
+      background: linear-gradient(135deg,
+        rgba(26,26,26,0.85) 0%,
+        rgba(221,0,0,0.25) 45%,
+        rgba(255,204,0,0.2) 100%);
+      border: 1px solid rgba(221,0,0,0.3);
+    }
+
+    .countdown-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 50% at 50% 0%,
+        rgba(255,204,0,0.1), transparent);
+      pointer-events: none;
+    }
+
+    /* ドイツ3色ボーダーライン */
+    .countdown-hero::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg,
+        var(--ger-black) 0%,
+        var(--ger-black) 33.3%,
+        var(--ger-red) 33.3%,
+        var(--ger-red) 66.6%,
+        var(--ger-gold) 66.6%,
+        var(--ger-gold) 100%);
+    }
+
+    .hero-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.3rem; letter-spacing: 4px;
+      color: var(--white); margin-bottom: 1.5rem;
+    }
+    .hero-title .ger { color: var(--ger-gold); }
+
+    .countdown-grid {
+      display: flex; justify-content: center; align-items: center;
+      gap: 0.6rem; flex-wrap: wrap;
+    }
+    .countdown-item { display: flex; flex-direction: column; align-items: center; }
+    .countdown-num {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 3.5rem;
+      background: linear-gradient(180deg, var(--ger-gold) 0%, #e6a800 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      min-width: 68px; text-align: center;
+      animation: glow 2s ease-in-out infinite;
+    }
+    .countdown-label {
+      font-size: 0.6rem; font-weight: 700;
+      color: var(--gray); text-transform: uppercase;
+      letter-spacing: 2px; margin-top: 0.3rem;
+    }
+    .countdown-sep {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.5rem; color: rgba(255,204,0,0.5);
+      padding-bottom: 1rem;
+    }
+    @keyframes glow {
+      0%,100% { filter: drop-shadow(0 0 6px rgba(255,204,0,0.4)); }
+      50% { filter: drop-shadow(0 0 16px rgba(255,204,0,0.8)); }
+    }
+
+    .next-match-info {
+      margin-top: 1rem; font-size: 0.8rem; color: var(--gray); line-height: 1.6;
+    }
+    .next-match-info strong { color: var(--ger-gold); }
+
+    /* ========== フィルターバー ========== */
+    .filter-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 1.5rem; gap: 0.8rem; flex-wrap: wrap;
+    }
+    .stage-filters { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .stage-chip {
+      background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--gray); padding: 0.35rem 0.75rem;
+      border-radius: 20px; font-size: 0.68rem; font-weight: 700;
+      cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px;
+    }
+    .stage-chip:hover { color: var(--white); background: var(--bg-card-hover); }
+    .stage-chip.active {
+      background: rgba(212,175,55,0.15); border-color: rgba(212,175,55,0.4);
+      color: var(--gold);
+    }
+
+    .germany-toggle { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+    .toggle-label {
+      font-size: 0.72rem; font-weight: 700; color: var(--gray);
+      transition: color 0.3s; white-space: nowrap;
+    }
+    .toggle-label.active { color: var(--ger-gold); }
+
+    .toggle-switch { position: relative; width: 46px; height: 24px; }
+    .toggle-switch input { display: none; }
+    .toggle-track {
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--border);
+      border-radius: 12px; transition: all 0.3s;
+    }
+    .toggle-switch input:checked ~ .toggle-track {
+      background: rgba(255,204,0,0.15); border-color: var(--ger-gold);
+    }
+    .toggle-thumb {
+      position: absolute; top: 3px; left: 3px;
+      width: 18px; height: 18px;
+      background: var(--gray); border-radius: 50%; transition: all 0.3s;
+    }
+    .toggle-switch input:checked ~ .toggle-thumb {
+      transform: translateX(22px);
+      background: var(--ger-gold);
+      box-shadow: 0 0 10px rgba(255,204,0,0.6);
+    }
+
+    /* ========== スワイプセクション ========== */
+    .swipe-section { margin-bottom: 2rem; }
+    .swipe-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 0.9rem;
+    }
+    .swipe-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.05rem; letter-spacing: 2px; color: var(--white);
+    }
+    .swipe-hint { font-size: 0.62rem; color: var(--gray); font-style: italic; }
+
+    .swipe-container {
+      display: flex; gap: 0.9rem; overflow-x: auto;
+      padding-bottom: 0.5rem; scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+    .swipe-container::-webkit-scrollbar { display: none; }
+
+    /* ========== スワイプカード ========== */
+    .swipe-card {
+      flex-shrink: 0; width: 240px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 1.1rem;
+      scroll-snap-align: start; transition: transform 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .swipe-card:active { transform: scale(0.97); }
+
+    /* ドイツカード — 3色ハイライト */
+    .swipe-card.ger-card {
+      background: linear-gradient(160deg,
+        rgba(26,26,26,0.9) 0%,
+        rgba(221,0,0,0.2) 50%,
+        rgba(255,204,0,0.15) 100%);
+      border-color: rgba(221,0,0,0.35);
+    }
+    .swipe-card.ger-card::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg,
+        var(--ger-black) 0%,
+        var(--ger-black) 33.3%,
+        var(--ger-red) 33.3%,
+        var(--ger-red) 66.6%,
+        var(--ger-gold) 66.6%,
+        var(--ger-gold) 100%);
+    }
+
+    /* 決勝カード — ゴールドハイライト */
+    .swipe-card.final-card {
+      background: linear-gradient(135deg,
+        rgba(212,175,55,0.15) 0%,
+        rgba(10,14,26,0.9) 100%);
+      border-color: rgba(212,175,55,0.5);
+      box-shadow: 0 0 20px rgba(212,175,55,0.15);
+    }
+    .swipe-card.final-card::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--final-gold), #fff7a0, var(--final-gold));
+    }
+
+    .card-top {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 0.9rem;
+    }
+    .stage-badge {
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; color: var(--gray);
+      background: rgba(255,255,255,0.06); padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+    }
+    .swipe-card.ger-card .stage-badge { color: var(--ger-gold); background: rgba(255,204,0,0.1); }
+    .swipe-card.final-card .stage-badge { color: var(--final-gold); background: rgba(212,175,55,0.15); }
+
+    .card-time {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.1rem; color: var(--white);
+    }
+    .swipe-card.ger-card .card-time { color: var(--ger-gold); }
+    .swipe-card.final-card .card-time { color: var(--final-gold); }
+
+    .card-teams { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 0.8rem; }
+    .team-row { display: flex; align-items: center; gap: 0.55rem; }
+    .team-flag-emoji { font-size: 1.4rem; flex-shrink: 0; }
+    .team-name-text {
+      font-size: 0.82rem; font-weight: 700; color: var(--white);
+    }
+    .swipe-card.ger-card .team-name-text.ger-name { color: var(--ger-gold); }
+    .swipe-card.final-card .team-name-text { color: var(--final-gold); }
+
+    .vs-row {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 0.8rem; color: var(--gray);
+      text-align: center; letter-spacing: 1px;
+    }
+    .card-venue {
+      font-size: 0.62rem; color: var(--gray);
+      text-align: center; line-height: 1.3;
+    }
+
+    /* ========== 試合リスト ========== */
+    .matches-list { display: flex; flex-direction: column; gap: 0.8rem; }
+
+    .date-separator {
+      display: flex; align-items: center; gap: 0.8rem;
+      margin: 1.4rem 0 0.7rem;
+    }
+    .date-text {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 0.85rem; letter-spacing: 2px;
+      color: var(--gray); white-space: nowrap;
+    }
+    .date-line { flex: 1; height: 1px; background: var(--border); }
+
+    /* ========== 試合カード ========== */
+    .match-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 0.9rem 1.1rem;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 0.8rem; transition: all 0.25s;
+      position: relative; overflow: hidden;
+    }
+    .match-card:hover { background: var(--bg-card-hover); transform: translateY(-2px); }
+
+    /* ドイツ試合カード — 3色ハイライト */
+    .match-card.ger-match {
+      background: linear-gradient(90deg,
+        rgba(26,26,26,0.6) 0%,
+        rgba(221,0,0,0.12) 50%,
+        rgba(255,204,0,0.08) 100%);
+      border-color: rgba(221,0,0,0.3);
+    }
+    .match-card.ger-match::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+      background: linear-gradient(180deg,
+        var(--ger-black) 0%,
+        var(--ger-black) 33.3%,
+        var(--ger-red) 33.3%,
+        var(--ger-red) 66.6%,
+        var(--ger-gold) 66.6%,
+        var(--ger-gold) 100%);
+    }
+
+    /* 決勝カード — ゴールドハイライト */
+    .match-card.final-match {
+      background: linear-gradient(90deg,
+        rgba(212,175,55,0.12) 0%,
+        var(--bg-card) 100%);
+      border-color: rgba(212,175,55,0.45);
+      box-shadow: 0 0 16px rgba(212,175,55,0.1);
+    }
+    .match-card.final-match::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+      background: linear-gradient(180deg, var(--final-gold), #fff7a0, var(--final-gold));
+    }
+
+    .match-left { display: flex; align-items: center; gap: 0.6rem; flex: 1; min-width: 0; }
+    .match-team-pair { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 0; }
+    .match-team-row { display: flex; align-items: center; gap: 0.45rem; }
+    .m-flag { font-size: 1.1rem; flex-shrink: 0; }
+    .m-name {
+      font-size: 0.82rem; font-weight: 700; color: var(--white);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .match-card.ger-match .m-name.ger-name { color: var(--ger-gold); }
+    .match-card.final-match .m-name { color: var(--final-gold); }
+
+    .m-vs {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 0.7rem; color: var(--gray);
+      text-align: center; padding: 0.1rem 0;
+    }
+
+    .match-right { text-align: right; flex-shrink: 0; }
+    .m-date { font-size: 0.65rem; color: var(--gray); margin-bottom: 0.15rem; }
+    .m-time {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.2rem; color: var(--white);
+    }
+    .match-card.ger-match .m-time { color: var(--ger-gold); }
+    .match-card.final-match .m-time { color: var(--final-gold); }
+    .m-venue { font-size: 0.58rem; color: var(--gray); margin-top: 0.15rem; max-width: 130px; }
+
+    /* ========== ドイツページヒーロー ========== */
+    .ger-hero {
+      border-radius: 20px; padding: 2.5rem 1.5rem;
+      text-align: center; margin-bottom: 2rem;
+      position: relative; overflow: hidden;
+      background: linear-gradient(160deg,
+        rgba(26,26,26,0.95) 0%,
+        rgba(221,0,0,0.3) 50%,
+        rgba(255,204,0,0.2) 100%);
+      border: 1px solid rgba(221,0,0,0.3);
+    }
+    .ger-hero::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 5px;
+      background: linear-gradient(90deg,
+        var(--ger-black) 0%,
+        var(--ger-black) 33.3%,
+        var(--ger-red) 33.3%,
+        var(--ger-red) 66.6%,
+        var(--ger-gold) 66.6%,
+        var(--ger-gold) 100%);
+    }
+    .ger-hero-flag { font-size: 5rem; margin-bottom: 0.5rem; display: block; }
+    .ger-hero-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.4rem; letter-spacing: 5px;
+      background: linear-gradient(90deg, #fff 0%, var(--ger-gold) 60%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .ger-hero-sub {
+      font-size: 0.75rem; color: var(--gray);
+      letter-spacing: 3px; margin-top: 0.5rem; text-transform: uppercase;
+    }
+
+    /* ========== ボトムナビ ========== */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(10,14,26,0.97);
+      backdrop-filter: blur(24px);
+      border-top: 1px solid var(--border);
+      display: flex; z-index: 200;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .nav-btn {
+      flex: 1; background: none; border: none;
+      color: var(--gray); font-family: 'Inter', sans-serif;
+      font-size: 0.65rem; font-weight: 700;
+      padding: 0.75rem 0.5rem;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 0.25rem; cursor: pointer; transition: all 0.2s;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .nav-icon { font-size: 1.3rem; }
+    .nav-btn.active { color: var(--ger-gold); }
+    .nav-btn.active .nav-icon {
+      filter: drop-shadow(0 0 8px rgba(255,204,0,0.6));
+    }
+
+    /* ========== 空状態 ========== */
+    .empty-state {
+      text-align: center; padding: 3rem 1rem; color: var(--gray);
+    }
+    .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+
+    /* ========== レスポンシブ ========== */
+    @media (max-width: 480px) {
+      .countdown-num { font-size: 2.7rem; }
+      .swipe-card { width: 215px; }
+      .m-name { font-size: 0.75rem; }
+      .logo { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ========== ヘッダー ========== -->
+  <header>
+    <div class="header-content">
+      <div style="display:flex; align-items:center; gap:0.5rem;">
+        <span style="font-size:1.4rem;">⚽</span>
+        <span class="logo">DIE MANNSCHAFT</span>
+        <span class="logo-sub">HUB 2026</span>
+      </div>
+      <span style="font-size:1.4rem;">🇩🇪</span>
+    </div>
+  </header>
+
+  <!-- ========== メインコンテンツ ========== -->
+  <main>
+    <!-- HOME セクション -->
+    <div id="home" class="section active">
+
+      <!-- カウントダウンヒーロー -->
+      <div class="countdown-hero">
+        <div class="hero-title">🇩🇪 NEXT <span class="ger">GERMANY</span> MATCH</div>
+        <div class="countdown-grid">
+          <div class="countdown-item">
+            <div class="countdown-num" id="cd-days">--</div>
+            <div class="countdown-label">Days</div>
+          </div>
+          <div class="countdown-sep">:</div>
+          <div class="countdown-item">
+            <div class="countdown-num" id="cd-hours">--</div>
+            <div class="countdown-label">Hours</div>
+          </div>
+          <div class="countdown-sep">:</div>
+          <div class="countdown-item">
+            <div class="countdown-num" id="cd-mins">--</div>
+            <div class="countdown-label">Mins</div>
+          </div>
+          <div class="countdown-sep">:</div>
+          <div class="countdown-item">
+            <div class="countdown-num" id="cd-secs">--</div>
+            <div class="countdown-label">Secs</div>
+          </div>
+        </div>
+        <div class="next-match-info" id="next-match-info"></div>
+      </div>
+
+      <!-- フィルターバー -->
+      <div class="filter-bar">
+        <div class="stage-filters">
+          <div class="stage-chip active" onclick="setStageFilter('all',this)">ALL</div>
+          <div class="stage-chip" onclick="setStageFilter('Group',this)">GROUP</div>
+          <div class="stage-chip" onclick="setStageFilter('Round of 32',this)">R32</div>
+          <div class="stage-chip" onclick="setStageFilter('Round of 16',this)">R16</div>
+          <div class="stage-chip" onclick="setStageFilter('Quarter',this)">QF</div>
+          <div class="stage-chip" onclick="setStageFilter('Semi',this)">SF</div>
+          <div class="stage-chip" onclick="setStageFilter('Final',this)">FINAL</div>
+        </div>
+        <label class="germany-toggle">
+          <span class="toggle-label" id="toggle-label">ALL</span>
+          <div class="toggle-switch">
+            <input type="checkbox" id="ger-chk" onchange="toggleGermany()">
+            <div class="toggle-track"></div>
+            <div class="toggle-thumb"></div>
+          </div>
+          <span style="font-size:1rem;">🇩🇪</span>
+        </label>
+      </div>
+
+      <!-- 今日の試合 -->
+      <div class="swipe-section" id="today-section">
+        <div class="swipe-header">
+          <div class="swipe-title">📅 TODAY'S MATCHES</div>
+          <div class="swipe-hint">← swipe →</div>
+        </div>
+        <div class="swipe-container" id="today-swipe"></div>
+      </div>
+
+      <!-- 今週の注目試合 -->
+      <div class="swipe-section" id="week-section">
+        <div class="swipe-header">
+          <div class="swipe-title">🔥 THIS WEEK'S HIGHLIGHTS</div>
+          <div class="swipe-hint">強豪国＆日本優先</div>
+        </div>
+        <div class="swipe-container" id="week-swipe"></div>
+      </div>
+
+      <!-- 直近の試合リスト -->
+      <div class="swipe-header" style="margin-bottom:0.8rem;">
+        <div class="swipe-title">📋 UPCOMING MATCHES</div>
+      </div>
+      <div id="home-matches"></div>
+    </div>
+
+    <!-- SCHEDULE セクション -->
+    <div id="schedule" class="section">
+      <div class="swipe-header" style="margin-bottom:1rem;">
+        <div class="swipe-title">📋 FULL SCHEDULE</div>
+        <div class="swipe-hint">全 104 試合</div>
+      </div>
+      <div id="schedule-matches"></div>
+    </div>
+
+    <!-- GERMANY セクション -->
+    <div id="germany" class="section">
+      <div class="ger-hero">
+        <span class="ger-hero-flag">🇩🇪</span>
+        <div class="ger-hero-title">DIE MANNSCHAFT</div>
+        <div class="ger-hero-sub">FIFA World Cup 2026 — Group E</div>
+      </div>
+      <div class="swipe-header" style="margin-bottom:0.8rem;">
+        <div class="swipe-title">🇩🇪 GERMANY FIXTURES</div>
+      </div>
+      <div id="germany-matches"></div>
+    </div>
+  </main>
+
+  <!-- ========== ボトムナビ ========== -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="showSection('home',this)">
+      <span class="nav-icon">🏠</span>HOME
+    </button>
+    <button class="nav-btn" onclick="showSection('schedule',this)">
+      <span class="nav-icon">📋</span>日程表
+    </button>
+    <button class="nav-btn" onclick="showSection('germany',this)">
+      <span class="nav-icon">🇩🇪</span>GER
+    </button>
+  </nav>
+
+  <script>
+    /* ============================================================
+       全104試合データ
+    ============================================================ */
+    const MATCHES = [
+      {id:"m1",  date:"2026-06-12",time:"04:00",stage:"Group A",  home:"メキシコ",            away:"南アフリカ",              venue:"Estadio Azteca, Mexico City"},
+      {id:"m2",  date:"2026-06-12",time:"11:00",stage:"Group A",  home:"韓国",                away:"チェコ",                  venue:"Estadio Akron, Zapopan"},
+      {id:"m3",  date:"2026-06-13",time:"04:00",stage:"Group B",  home:"カナダ",              away:"ボスニア・ヘルツェゴビナ", venue:"BMO Field, Toronto"},
+      {id:"m4",  date:"2026-06-13",time:"10:00",stage:"Group D",  home:"アメリカ",            away:"パラグアイ",              venue:"SoFi Stadium, Inglewood"},
+      {id:"m5",  date:"2026-06-14",time:"04:00",stage:"Group B",  home:"カタール",            away:"スイス",                  venue:"Levi's Stadium, Santa Clara"},
+      {id:"m6",  date:"2026-06-14",time:"07:00",stage:"Group C",  home:"ブラジル",            away:"モロッコ",                venue:"Gillette Stadium, Foxborough"},
+      {id:"m7",  date:"2026-06-14",time:"10:00",stage:"Group C",  home:"ハイチ",              away:"スコットランド",          venue:"MetLife Stadium, East Rutherford"},
+      {id:"m8",  date:"2026-06-14",time:"13:00",stage:"Group D",  home:"オーストラリア",      away:"トルコ",                  venue:"BC Place, Vancouver"},
+      {id:"m9",  date:"2026-06-15",time:"02:00",stage:"Group E",  home:"コートジボワール",    away:"エクアドル",              venue:"Lincoln Financial Field, Philadelphia"},
+      {id:"m10", date:"2026-06-15",time:"05:00",stage:"Group F",  home:"オランダ",            away:"日本",                    venue:"AT&T Stadium, Arlington"},
+      {id:"m11", date:"2026-06-15",time:"08:00",stage:"Group E",  home:"ドイツ",              away:"キュラソー",              venue:"NRG Stadium, Houston",          ger:true},
+      {id:"m12", date:"2026-06-15",time:"11:00",stage:"Group F",  home:"スウェーデン",        away:"チュニジア",              venue:"Estadio BBVA, Guadalupe"},
+      {id:"m13", date:"2026-06-16",time:"01:00",stage:"Group H",  home:"スペイン",            away:"カーボベルデ",            venue:"Mercedes-Benz Stadium, Atlanta"},
+      {id:"m14", date:"2026-06-16",time:"04:00",stage:"Group G",  home:"ベルギー",            away:"エジプト",                venue:"Lumen Field, Seattle"},
+      {id:"m15", date:"2026-06-16",time:"07:00",stage:"Group H",  home:"サウジアラビア",      away:"ウルグアイ",              venue:"Hard Rock Stadium, Miami Gardens"},
+      {id:"m16", date:"2026-06-16",time:"10:00",stage:"Group G",  home:"イラン",              away:"ニュージーランド",        venue:"SoFi Stadium, Inglewood"},
+      {id:"m17", date:"2026-06-17",time:"04:00",stage:"Group I",  home:"フランス",            away:"セネガル",                venue:"MetLife Stadium, East Rutherford"},
+      {id:"m18", date:"2026-06-17",time:"07:00",stage:"Group I",  home:"イラク",              away:"ノルウェー",              venue:"Gillette Stadium, Foxborough"},
+      {id:"m19", date:"2026-06-17",time:"10:00",stage:"Group J",  home:"アルゼンチン",        away:"アルジェリア",            venue:"Arrowhead Stadium, Kansas City"},
+      {id:"m20", date:"2026-06-17",time:"13:00",stage:"Group J",  home:"オーストリア",        away:"ヨルダン",                venue:"Levi's Stadium, Santa Clara"},
+      {id:"m21", date:"2026-06-18",time:"02:00",stage:"Group K",  home:"ポルトガル",          away:"DRコンゴ",                venue:"NRG Stadium, Houston"},
+      {id:"m22", date:"2026-06-18",time:"05:00",stage:"Group L",  home:"イングランド",        away:"クロアチア",              venue:"AT&T Stadium, Arlington"},
+      {id:"m23", date:"2026-06-18",time:"08:00",stage:"Group L",  home:"ガーナ",              away:"パナマ",                  venue:"BMO Field, Toronto"},
+      {id:"m24", date:"2026-06-18",time:"11:00",stage:"Group K",  home:"ウズベキスタン",      away:"コロンビア",              venue:"Estadio Azteca, Mexico City"},
+      {id:"m25", date:"2026-06-19",time:"01:00",stage:"Group A",  home:"チェコ",              away:"南アフリカ",              venue:"Mercedes-Benz Stadium, Atlanta"},
+      {id:"m26", date:"2026-06-19",time:"04:00",stage:"Group B",  home:"スイス",              away:"ボスニア・ヘルツェゴビナ",venue:"SoFi Stadium, Inglewood"},
+      {id:"m27", date:"2026-06-19",time:"07:00",stage:"Group B",  home:"カナダ",              away:"カタール",                venue:"BC Place, Vancouver"},
+      {id:"m28", date:"2026-06-19",time:"10:00",stage:"Group A",  home:"メキシコ",            away:"韓国",                    venue:"Estadio Akron, Zapopan"},
+      {id:"m29", date:"2026-06-20",time:"04:00",stage:"Group D",  home:"アメリカ",            away:"オーストラリア",          venue:"Lumen Field, Seattle"},
+      {id:"m30", date:"2026-06-20",time:"07:00",stage:"Group C",  home:"スコットランド",      away:"モロッコ",                venue:"Lincoln Financial Field, Philadelphia"},
+      {id:"m31", date:"2026-06-20",time:"10:00",stage:"Group C",  home:"ブラジル",            away:"ハイチ",                  venue:"Gillette Stadium, Foxborough"},
+      {id:"m32", date:"2026-06-20",time:"13:00",stage:"Group D",  home:"トルコ",              away:"パラグアイ",              venue:"Levi's Stadium, Santa Clara"},
+      {id:"m33", date:"2026-06-21",time:"02:00",stage:"Group F",  home:"オランダ",            away:"スウェーデン",            venue:"NRG Stadium, Houston"},
+      {id:"m34", date:"2026-06-21",time:"05:00",stage:"Group E",  home:"ドイツ",              away:"コートジボワール",        venue:"BMO Field, Toronto",            ger:true},
+      {id:"m35", date:"2026-06-21",time:"09:00",stage:"Group E",  home:"エクアドル",          away:"キュラソー",              venue:"Arrowhead Stadium, Kansas City"},
+      {id:"m36", date:"2026-06-21",time:"13:00",stage:"Group F",  home:"チュニジア",          away:"日本",                    venue:"Estadio BBVA, Guadalupe"},
+      {id:"m37", date:"2026-06-22",time:"01:00",stage:"Group H",  home:"スペイン",            away:"サウジアラビア",          venue:"Mercedes-Benz Stadium, Atlanta"},
+      {id:"m38", date:"2026-06-22",time:"04:00",stage:"Group G",  home:"ベルギー",            away:"イラン",                  venue:"SoFi Stadium, Inglewood"},
+      {id:"m39", date:"2026-06-22",time:"07:00",stage:"Group H",  home:"ウルグアイ",          away:"カーボベルデ",            venue:"Hard Rock Stadium, Miami Gardens"},
+      {id:"m40", date:"2026-06-22",time:"10:00",stage:"Group G",  home:"ニュージーランド",    away:"エジプト",                venue:"BC Place, Vancouver"},
+      {id:"m41", date:"2026-06-23",time:"02:00",stage:"Group J",  home:"アルゼンチン",        away:"オーストリア",            venue:"AT&T Stadium, Arlington"},
+      {id:"m42", date:"2026-06-23",time:"06:00",stage:"Group I",  home:"フランス",            away:"イラク",                  venue:"Lincoln Financial Field, Philadelphia"},
+      {id:"m43", date:"2026-06-23",time:"09:00",stage:"Group I",  home:"ノルウェー",          away:"セネガル",                venue:"MetLife Stadium, East Rutherford"},
+      {id:"m44", date:"2026-06-23",time:"12:00",stage:"Group J",  home:"ヨルダン",            away:"アルジェリア",            venue:"Levi's Stadium, Santa Clara"},
+      {id:"m45", date:"2026-06-24",time:"02:00",stage:"Group K",  home:"ポルトガル",          away:"ウズベキスタン",          venue:"NRG Stadium, Houston"},
+      {id:"m46", date:"2026-06-24",time:"05:00",stage:"Group L",  home:"イングランド",        away:"ガーナ",                  venue:"Gillette Stadium, Foxborough"},
+      {id:"m47", date:"2026-06-24",time:"08:00",stage:"Group L",  home:"パナマ",              away:"クロアチア",              venue:"BMO Field, Toronto"},
+      {id:"m48", date:"2026-06-24",time:"11:00",stage:"Group K",  home:"コロンビア",          away:"DRコンゴ",                venue:"Estadio Akron, Zapopan"},
+      {id:"m49", date:"2026-06-25",time:"04:00",stage:"Group B",  home:"スイス",              away:"カナダ",                  venue:"BC Place, Vancouver"},
+      {id:"m50", date:"2026-06-25",time:"04:00",stage:"Group B",  home:"ボスニア・ヘルツェゴビナ",away:"カタール",            venue:"Lumen Field, Seattle"},
+      {id:"m51", date:"2026-06-25",time:"07:00",stage:"Group C",  home:"スコットランド",      away:"ブラジル",                venue:"Hard Rock Stadium, Miami Gardens"},
+      {id:"m52", date:"2026-06-25",time:"07:00",stage:"Group C",  home:"モロッコ",            away:"ハイチ",                  venue:"Mercedes-Benz Stadium, Atlanta"},
+      {id:"m53", date:"2026-06-25",time:"10:00",stage:"Group A",  home:"チェコ",              away:"メキシコ",                venue:"Estadio Azteca, Mexico City"},
+      {id:"m54", date:"2026-06-25",time:"10:00",stage:"Group A",  home:"南アフリカ",          away:"韓国",                    venue:"Estadio BBVA, Guadalupe"},
+      {id:"m55", date:"2026-06-26",time:"05:00",stage:"Group E",  home:"キュラソー",          away:"コートジボワール",        venue:"Lincoln Financial Field, Philadelphia"},
+      {id:"m56", date:"2026-06-26",time:"05:00",stage:"Group E",  home:"エクアドル",          away:"ドイツ",                  venue:"MetLife Stadium, East Rutherford",ger:true},
+      {id:"m57", date:"2026-06-26",time:"08:00",stage:"Group F",  home:"日本",                away:"スウェーデン",            venue:"AT&T Stadium, Arlington"},
+      {id:"m58", date:"2026-06-26",time:"08:00",stage:"Group F",  home:"チュニジア",          away:"オランダ",                venue:"Arrowhead Stadium, Kansas City"},
+      {id:"m59", date:"2026-06-26",time:"11:00",stage:"Group D",  home:"トルコ",              away:"アメリカ",                venue:"SoFi Stadium, Inglewood"},
+      {id:"m60", date:"2026-06-26",time:"11:00",stage:"Group D",  home:"パラグアイ",          away:"オーストラリア",          venue:"Levi's Stadium, Santa Clara"},
+      {id:"m61", date:"2026-06-27",time:"04:00",stage:"Group I",  home:"ノルウェー",          away:"フランス",                venue:"Gillette Stadium, Foxborough"},
+      {id:"m62", date:"2026-06-27",time:"04:00",stage:"Group I",  home:"セネガル",            away:"イラク",                  venue:"BMO Field, Toronto"},
+      {id:"m63", date:"2026-06-27",time:"09:00",stage:"Group H",  home:"カーボベルデ",        away:"サウジアラビア",          venue:"NRG Stadium, Houston"},
+      {id:"m64", date:"2026-06-27",time:"09:00",stage:"Group H",  home:"ウルグアイ",          away:"スペイン",                venue:"Estadio Akron, Zapopan"},
+      {id:"m65", date:"2026-06-27",time:"12:00",stage:"Group G",  home:"エジプト",            away:"イラン",                  venue:"Lumen Field, Seattle"},
+      {id:"m66", date:"2026-06-27",time:"12:00",stage:"Group G",  home:"ニュージーランド",    away:"ベルギー",                venue:"BC Place, Vancouver"},
+      {id:"m67", date:"2026-06-28",time:"06:00",stage:"Group L",  home:"パナマ",              away:"イングランド",            venue:"MetLife Stadium, East Rutherford"},
+      {id:"m68", date:"2026-06-28",time:"06:00",stage:"Group L",  home:"クロアチア",          away:"ガーナ",                  venue:"Lincoln Financial Field, Philadelphia"},
+      {id:"m69", date:"2026-06-28",time:"08:30",stage:"Group K",  home:"コロンビア",          away:"ポルトガル",              venue:"Hard Rock Stadium, Miami Gardens"},
+      {id:"m70", date:"2026-06-28",time:"08:30",stage:"Group K",  home:"DRコンゴ",            away:"ウズベキスタン",          venue:"Mercedes-Benz Stadium, Atlanta"},
+      {id:"m71", date:"2026-06-28",time:"11:00",stage:"Group J",  home:"アルジェリア",        away:"オーストリア",            venue:"Arrowhead Stadium, Kansas City"},
+      {id:"m72", date:"2026-06-28",time:"11:00",stage:"Group J",  home:"ヨルダン",            away:"アルゼンチン",            venue:"AT&T Stadium, Arlington"},
+      // 決勝トーナメント（一部抜粋）
+      {id:"m73", date:"2026-06-29",time:"TBD",stage:"Round of 32",home:"2位 Group A",   away:"2位 Group B",    venue:"SoFi Stadium, Inglewood"},
+      {id:"m104",date:"2026-07-20",time:"TBD",stage:"Final",        home:"勝者 M101",   away:"勝者 M102",      venue:"MetLife Stadium, East Rutherford", final:true}
+    ];
+
+    /* ============================================================
+       国旗マッピング（絵文字）
+    ============================================================ */
+    const FLAGS = {
+      "ドイツ":"🇩🇪","メキシコ":"🇲🇽","南アフリカ":"🇿🇦","韓国":"🇰🇷","チェコ":"🇨🇿",
+      "カナダ":"🇨🇦","ボスニア・ヘルツェゴビナ":"🇧🇦","アメリカ":"🇺🇸","パラグアイ":"🇵🇾",
+      "カタール":"🇶🇦","スイス":"🇨🇭","ブラジル":"🇧🇷","モロッコ":"🇲🇦","ハイチ":"🇭🇹",
+      "スコットランド":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","オーストラリア":"🇦🇺","トルコ":"🇹🇷",
+      "コートジボワール":"🇨🇮","エクアドル":"🇪🇨","オランダ":"🇳🇱","日本":"🇯🇵",
+      "キュラソー":"🇨🇼","スウェーデン":"🇸🇪","チュニジア":"🇹🇳","スペイン":"🇪🇸",
+      "カーボベルデ":"🇨🇻","ベルギー":"🇧🇪","エジプト":"🇪🇬","サウジアラビア":"🇸🇦",
+      "ウルグアイ":"🇺🇾","イラン":"🇮🇷","ニュージーランド":"🇳🇿","フランス":"🇫🇷",
+      "セネガル":"🇸🇳","イラク":"🇮🇶","ノルウェー":"🇳🇴","アルゼンチン":"🇦🇷",
+      "アルジェリア":"🇩🇿","オーストリア":"🇦🇹","ヨルダン":"🇯🇴","ポルトガル":"🇵🇹",
+      "DRコンゴ":"🇨🇩","イングランド":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","クロアチア":"🇭🇷","ガーナ":"🇬🇭",
+      "パナマ":"🇵🇦","ウズベキスタン":"🇺🇿","コロンビア":"🇨🇴"
+    };
+
+    /* 今週ハイライト対象チーム */
+    const HIGHLIGHT_TEAMS = ["ドイツ","日本","アルゼンチン","ポルトガル","フランス","ブラジル"];
+
+    /* ============================================================
+       状態管理
+    ============================================================ */
+    let germanyOnly = false;
+    let stageFilter = "all";
+
+    /* ============================================================
+       ユーティリティ
+    ============================================================ */
+    function getFlag(name) {
+      return FLAGS[name] || (
+        name.includes("位")||name.includes("勝者")||name.includes("敗者") ? "🏳️" : "❓"
+      );
+    }
+
+    function formatDate(str) {
+      const d = new Date(str);
+      const w = ['日','月','火','水','木','金','土'];
+      return `${d.getMonth()+1}/${d.getDate()}（${w[d.getDay()]}）`;
+    }
+
+    function parseDT(m) {
+      if (m.time === "TBD") return new Date(m.date + "T23:59:00");
+      const [h,min] = m.time.split(':').map(Number);
+      const [y,mo,d] = m.date.split('-').map(Number);
+      return new Date(y, mo-1, d, h, min);
+    }
+
+    function todayStr() {
+      const n = new Date();
+      return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
+    }
+
+    /* カードのCSSクラスを決定 */
+    function cardClass(m) {
+      if (m.final) return "final-card";
+      if (m.ger)   return "ger-card";
+      return "";
+    }
+    function matchCardClass(m) {
+      if (m.final) return "final-match";
+      if (m.ger)   return "ger-match";
+      return "";
+    }
+
+    /* ============================================================
+       カウントダウン
+    ============================================================ */
+    function nextGerMatch() {
+      const now = new Date();
+      return MATCHES
+        .filter(m => m.ger)
+        .map(m => ({m, dt: parseDT(m)}))
+        .filter(x => x.dt > now)
+        .sort((a,b) => a.dt - b.dt)[0];
+    }
+
+    function updateCountdown() {
+      const next = nextGerMatch();
+      const ids = ['cd-days','cd-hours','cd-mins','cd-secs'];
+      if (!next) { ids.forEach(id => document.getElementById(id).textContent='00'); return; }
+      const diff = next.dt - new Date();
+      if (diff <= 0) { ids.forEach(id => document.getElementById(id).textContent='00'); return; }
+      const days  = Math.floor(diff/86400000);
+      const hours = Math.floor((diff%86400000)/3600000);
+      const mins  = Math.floor((diff%3600000)/60000);
+      const secs  = Math.floor((diff%60000)/1000);
+      document.getElementById('cd-days').textContent  = String(days).padStart(2,'0');
+      document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
+      document.getElementById('cd-mins').textContent  = String(mins).padStart(2,'0');
+      document.getElementById('cd-secs').textContent  = String(secs).padStart(2,'0');
+      const {m} = next;
+      const t = m.time === "TBD" ? "時間未定" : `${m.time} JST`;
+      document.getElementById('next-match-info').innerHTML =
+        `<strong>${getFlag(m.home)} ${m.home} vs ${m.away} ${getFlag(m.away)}</strong><br>${formatDate(m.date)}　${t}`;
+    }
+
+    /* ============================================================
+       スワイプカード生成
+    ============================================================ */
+    function makeSwipeCard(m) {
+      const cls  = cardClass(m);
+      const hGer = m.home === 'ドイツ';
+      const aGer = m.away === 'ドイツ';
+      const t    = m.time === "TBD" ? "TBD" : `${m.time} JST`;
+      return `
+        <div class="swipe-card ${cls}">
+          <div class="card-top">
+            <span class="stage-badge">${m.stage}</span>
+            <span class="card-time">${t}</span>
+          </div>
+          <div class="card-teams">
+            <div class="team-row">
+              <span class="team-flag-emoji">${getFlag(m.home)}</span>
+              <span class="team-name-text ${hGer?'ger-name':''}">${m.home}</span>
+            </div>
+            <div class="vs-row">VS</div>
+            <div class="team-row">
+              <span class="team-flag-emoji">${getFlag(m.away)}</span>
+              <span class="team-name-text ${aGer?'ger-name':''}">${m.away}</span>
+            </div>
+          </div>
+          <div class="card-venue">📍 ${m.venue.split(',')[0]}</div>
+        </div>`;
+    }
+
+    /* ============================================================
+       試合リストカード生成
+    ============================================================ */
+    function makeMatchCard(m) {
+      const cls  = matchCardClass(m);
+      const hGer = m.home === 'ドイツ';
+      const aGer = m.away === 'ドイツ';
+      const t    = m.time === "TBD" ? "TBD" : m.time;
+      return `
+        <div class="match-card ${cls}">
+          <div class="match-left">
+            <div class="match-team-pair">
+              <div class="match-team-row">
+                <span class="m-flag">${getFlag(m.home)}</span>
+                <span class="m-name ${hGer?'ger-name':''}">${m.home}</span>
+              </div>
+              <div class="m-vs">VS</div>
+              <div class="match-team-row">
+                <span class="m-flag">${getFlag(m.away)}</span>
+                <span class="m-name ${aGer?'ger-name':''}">${m.away}</span>
+              </div>
+            </div>
+          </div>
+          <div class="match-right">
+            <div class="m-date">${formatDate(m.date)}</div>
+            <div class="m-time">${t}</div>
+            <div class="m-venue">📍 ${m.venue.split(',')[0]}</div>
+          </div>
+        </div>`;
+    }
+
+    /* ============================================================
+       グループ別リスト描画
+    ============================================================ */
+    function renderGrouped(list, el) {
+      if (!list.length) {
+        el.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><p>該当する試合がありません</p></div>`;
+        return;
+      }
+      const sorted = [...list].sort((a,b) =>
+        a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
+      let html = "", lastDate = "";
+      sorted.forEach(m => {
+        if (m.date !== lastDate) {
+          html += `<div class="date-separator">
+            <span class="date-text">${formatDate(m.date)}</span>
+            <div class="date-line"></div>
+          </div>`;
+          lastDate = m.date;
+        }
+        html += makeMatchCard(m);
+      });
+      el.innerHTML = html;
+    }
+
+    /* ============================================================
+       フィルタリング
+    ============================================================ */
+    function filtered() {
+      return MATCHES.filter(m => {
+        const gOk = !germanyOnly || m.ger;
+        const sOk = stageFilter === "all" || m.stage.includes(stageFilter);
+        return gOk && sOk;
+      });
+    }
+
+    /* ============================================================
+       今週ハイライト選出ロジック
+       優先：HIGHLIGHT_TEAMS のいずれかが出場する試合
+       なければ：直近8試合
+    ============================================================ */
+    function getWeekHighlights(source, now, weekLater) {
+      const inRange = source.filter(m => {
+        const dt = parseDT(m);
+        return dt >= now && dt <= weekLater;
+      });
+      const priority = inRange.filter(m =>
+        HIGHLIGHT_TEAMS.includes(m.home) || HIGHLIGHT_TEAMS.includes(m.away)
+      );
+      return priority.length ? priority.slice(0,8) : inRange.slice(0,8);
+    }
+
+    /* ============================================================
+       HOME レンダリング
+    ============================================================ */
+    function renderHome() {
+      const now    = new Date();
+      const today  = todayStr();
+      const weekL  = new Date(now.getTime() + 7*86400000);
+      const src    = filtered();
+
+      // 今日
+      const todayList = src.filter(m => m.date === today);
+      const todaySec  = document.getElementById('today-section');
+      const todaySwipe = document.getElementById('today-swipe');
+      if (todayList.length) {
+        todaySec.style.display = 'block';
+        todaySwipe.innerHTML = todayList.map(makeSwipeCard).join('');
+      } else {
+        todaySec.style.display = 'none';
+      }
+
+      // 今週ハイライト
+      const weekList = getWeekHighlights(src, now, weekL);
+      const weekSec  = document.getElementById('week-section');
+      const weekSwipe = document.getElementById('week-swipe');
+      if (weekList.length) {
+        weekSec.style.display = 'block';
+        weekSwipe.innerHTML = weekList.map(makeSwipeCard).join('');
+      } else {
+        weekSec.style.display = 'none';
+      }
+
+      // 直近リスト
+      const upcoming = src
+        .filter(m => parseDT(m) >= now)
+        .sort((a,b) => parseDT(a)-parseDT(b))
+        .slice(0,12);
+      renderGrouped(upcoming, document.getElementById('home-matches'));
+    }
+
+    /* ============================================================
+       SCHEDULE / GERMANY レンダリング
+    ============================================================ */
+    function renderSchedule() {
+      renderGrouped(filtered(), document.getElementById('schedule-matches'));
+    }
+
+    function renderGermany() {
+      renderGrouped(MATCHES.filter(m => m.ger), document.getElementById('germany-matches'));
+    }
+
+    /* ============================================================
+       イベントハンドラー
+    ============================================================ */
+    function setStageFilter(stage, el) {
+      stageFilter = stage;
+      document.querySelectorAll('.stage-chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      renderHome(); renderSchedule();
+    }
+
+    function toggleGermany() {
+      germanyOnly = document.getElementById('ger-chk').checked;
+      const lbl = document.getElementById('toggle-label');
+      lbl.textContent = germanyOnly ? '🇩🇪 ONLY' : 'ALL';
+      lbl.classList.toggle('active', germanyOnly);
+      renderHome(); renderSchedule();
+    }
+
+    function showSection(id, btn) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      if (btn) btn.classList.add('active');
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    /* ============================================================
+       初期化
+    ============================================================ */
+    renderHome();
+    renderSchedule();
+    renderGermany();
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  </script>
+<script>
+(function() {
+  'use strict';
+
+  function generateGermanIcon(size) {
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+
+      const stripHeight = Math.floor(size / 3);
+
+      // ドイツ国旗：黒・赤・金
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, size, stripHeight);
+
+      ctx.fillStyle = '#DD0000';
+      ctx.fillRect(0, stripHeight, size, stripHeight);
+
+      ctx.fillStyle = '#FFCC00';
+      ctx.fillRect(0, stripHeight * 2, size, size - stripHeight * 2);
+
+      // 中央にサッカーボール⚽
+      ctx.font = `${Math.floor(size * 0.4)}px Arial, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = Math.max(1, size * 0.02);
+
+      const centerX = size / 2;
+      const centerY = size / 2;
+      ctx.strokeText('⚽', centerX, centerY);
+      ctx.fillText('⚽', centerX, centerY);
+
+      return canvas.toDataURL('image/png');
+    } catch (error) {
+      console.warn('アイコン生成エラー:', error);
+      return null;
+    }
+  }
+
+  function setFavicon(rel, sizes, href, type = 'image/png') {
+    if (!href) return;
+    
+    // 既存の同じタイプのアイコンを削除
+    const existing = document.querySelectorAll(`link[rel="${rel}"]`);
+    existing.forEach(link => {
+      if (!sizes || link.getAttribute('sizes') === sizes) {
+        link.remove();
+      }
+    });
+
+    // 新しいアイコンを追加
+    const link = document.createElement('link');
+    link.rel = rel;
+    if (sizes) link.sizes = sizes;
+    link.href = href;
+    if (type) link.type = type;
+    document.head.appendChild(link);
+  }
+
+  function initializeIcons() {
+    console.log('🇩🇪 ドイツカラーアイコン生成開始...');
+
+    // ブラウザタブ用
+    const favicon = generateGermanIcon(32);
+    setFavicon('shortcut icon', null, favicon);
+    setFavicon('icon', '32x32', favicon);
+
+    // iOS用（複数サイズ対応）
+    setFavicon('apple-touch-icon', '180x180', generateGermanIcon(180));
+    setFavicon('apple-touch-icon', '152x152', generateGermanIcon(152));
+    setFavicon('apple-touch-icon', '120x120', generateGermanIcon(120));
+
+    // Android/PWA用
+    setFavicon('icon', '192x192', generateGermanIcon(192));
+    setFavicon('icon', '512x512', generateGermanIcon(512));
+
+    console.log('✅ ドイツカラーアイコン生成完了！');
+  }
+
+  // 確実に実行するための複数トリガー
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeIcons);
+  } else {
+    initializeIcons();
+  }
+})();
+</script>
+</body>
+</html>
+
+</body>
+</html>
